@@ -1,26 +1,80 @@
-@import "tailwindcss";
+@layer theme, base, mantine, components, utilities;
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/preflight.css" layer(base);
+@import "tailwindcss/utilities.css" layer(utilities);
 
+@import "@mantine/core/styles.layer.css";
+@import "tailwind-preset-mantine/theme.css";
+
+/* Light mode (default) */
+:root,
+[data-mantine-color-scheme="light"] {
+  --bee-color-background: #f4f4f4;
+  --bee-color-surface: #ffffff;
+  --bee-color-elevated: #ececec;
+  --bee-color-border: #d6d6d6;
+  --bee-color-input: #d6d6d6;
+  --bee-color-text-primary: #111111;
+  --bee-color-text-secondary: #333333;
+  --bee-color-text-muted: #666666;
+  --bee-color-success-bg: #d4f5b0;
+  --bee-color-success-text: #4a7a1a;
+  --bee-color-warning-bg: #ffe4b0;
+  --bee-color-warning-text: #995f00;
+  --bee-color-info-bg: #fff3b0;
+  --bee-color-info-text: #997a00;
+  --bee-color-error-bg: #ffe0e0;
+  --bee-color-error-text: #b11212;
+  --bee-color-logo: #d4a017;
+}
+
+/* Dark mode */
+[data-mantine-color-scheme="dark"] {
+  --bee-color-background: #0b0b0b;
+  --bee-color-surface: #141414;
+  --bee-color-elevated: #1d1d1d;
+  --bee-color-border: #2a2a2a;
+  --bee-color-input: #2a2a2a;
+  --bee-color-text-primary: #f2f2f2;
+  --bee-color-text-secondary: #bdbdbd;
+  --bee-color-text-muted: #8a8a8a;
+  --bee-color-success-bg: #1f3d0a;
+  --bee-color-success-text: #9ed93d;
+  --bee-color-warning-bg: #3d2800;
+  --bee-color-warning-text: #ffb830;
+  --bee-color-info-bg: #3d3400;
+  --bee-color-info-text: #ffd400;
+  --bee-color-error-bg: #2a0a0a;
+  --bee-color-error-text: #ff4444;
+  --bee-color-logo: #fbbf24;
+}
+
+/* Shared (same in both modes) */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --bee-color-primary: #ffd400;
+  --bee-color-sidebar: #111111;
 }
 
+/* Tailwind theme - generates utilities like bg-bee-background, text-bee-primary */
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-bee-background: var(--bee-color-background);
+  --color-bee-surface: var(--bee-color-surface);
+  --color-bee-elevated: var(--bee-color-elevated);
+  --color-bee-border: var(--bee-color-border);
+  --color-bee-input: var(--bee-color-input);
+  --color-bee-text-primary: var(--bee-color-text-primary);
+  --color-bee-text-secondary: var(--bee-color-text-secondary);
+  --color-bee-text-muted: var(--bee-color-text-muted);
+  --color-bee-success-bg: var(--bee-color-success-bg);
+  --color-bee-success-text: var(--bee-color-success-text);
+  --color-bee-warning-bg: var(--bee-color-warning-bg);
+  --color-bee-warning-text: var(--bee-color-warning-text);
+  --color-bee-info-bg: var(--bee-color-info-bg);
+  --color-bee-info-text: var(--bee-color-info-text);
+  --color-bee-error-bg: var(--bee-color-error-bg);
+  --color-bee-error-text: var(--bee-color-error-text);
+  --color-bee-primary: var(--bee-color-primary);
+  --color-bee-sidebar: var(--bee-color-sidebar);
+  --color-bee-logo: var(--bee-color-logo);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
-}
