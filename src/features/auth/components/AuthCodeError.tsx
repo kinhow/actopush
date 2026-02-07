@@ -1,18 +1,25 @@
 import Link from "next/link";
 import { Stack, Text, Title, Button, Center } from "@mantine/core";
 import { IconAlertCircle } from "@tabler/icons-react";
+import { AUTH_PRIMARY_BUTTON_CLASSES } from "../constants/styles";
 
-export default function AuthCodeErrorPage() {
+export function AuthCodeError() {
   return (
-    <Center mih="100vh" className="bg-bee-background">
+    <Center mih="100vh" className="bg-octopush-background">
       <Stack w={400} gap={24} align="center">
-        <IconAlertCircle size={64} className="text-bee-error-text" />
+        <IconAlertCircle size={64} className="text-octopush-error-text" />
 
         <Stack gap={8} align="center">
-          <Title order={2} fz={24} fw={700} ta="center" className="text-bee-text-primary">
+          <Title
+            order={2}
+            fz={24}
+            fw={700}
+            ta="center"
+            className="text-octopush-text-primary"
+          >
             Authentication Error
           </Title>
-          <Text fz={14} ta="center" className="text-bee-text-muted">
+          <Text fz={14} ta="center" className="text-octopush-text-muted">
             Sorry, we couldn&apos;t verify your authentication. Please try again.
           </Text>
         </Stack>
@@ -23,9 +30,7 @@ export default function AuthCodeErrorPage() {
           fullWidth
           radius="xl"
           h={40}
-          classNames={{
-            root: "bg-bee-primary text-bee-sidebar font-medium text-sm hover:opacity-90",
-          }}
+          classNames={AUTH_PRIMARY_BUTTON_CLASSES}
         >
           Back to Sign In
         </Button>

@@ -1,8 +1,8 @@
-import { signOut } from "./actions";
 import { ActionIcon } from "@mantine/core";
 import { IconLogout } from "@tabler/icons-react";
+import { signOut } from "../actions/signout";
 
-export function SignOut() {
+export function SignOutButton() {
   return (
     <form>
       <ActionIcon
@@ -10,7 +10,7 @@ export function SignOut() {
         formAction={signOut}
         variant="subtle"
         aria-label="Sign out"
-        className="text-bee-text-muted hover:text-bee-text-primary"
+        className="text-octopush-text-muted hover:text-octopush-text-primary"
       >
         <IconLogout size={20} />
       </ActionIcon>

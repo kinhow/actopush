@@ -6,75 +6,78 @@
 @import "@mantine/core/styles.layer.css";
 @import "tailwind-preset-mantine/theme.css";
 
+/* Shared brand colors (same in both modes) */
+:root {
+  --octopush-color-primary: #FF2D55;
+  --octopush-color-primary-hover: #E6194B;
+  --octopush-color-secondary: #00FFFF;
+  --octopush-color-accent: #FF9500;
+  --octopush-color-sidebar: #FFFFFF;
+}
+
 /* Light mode (default) */
 :root,
 [data-mantine-color-scheme="light"] {
-  --bee-color-background: #f4f4f4;
-  --bee-color-surface: #ffffff;
-  --bee-color-elevated: #ececec;
-  --bee-color-border: #d6d6d6;
-  --bee-color-input: #d6d6d6;
-  --bee-color-text-primary: #111111;
-  --bee-color-text-secondary: #333333;
-  --bee-color-text-muted: #666666;
-  --bee-color-success-bg: #d4f5b0;
-  --bee-color-success-text: #4a7a1a;
-  --bee-color-warning-bg: #ffe4b0;
-  --bee-color-warning-text: #995f00;
-  --bee-color-info-bg: #fff3b0;
-  --bee-color-info-text: #997a00;
-  --bee-color-error-bg: #ffe0e0;
-  --bee-color-error-text: #b11212;
-  --bee-color-logo: #d4a017;
+  --octopush-color-background: #F8F8F8;
+  --octopush-color-surface: #0A0A0A;
+  --octopush-color-elevated: #F0F0F0;
+  --octopush-color-border: #D0D0D0;
+  --octopush-color-input: #E0E0E0;
+  --octopush-color-text-primary: #1A1A1A;
+  --octopush-color-text-secondary: #A0A0A0;
+  --octopush-color-text-muted: #808080;
+  --octopush-color-success-bg: #E8FFE0;
+  --octopush-color-success-text: #1A8A0A;
+  --octopush-color-warning-bg: #FFF5CC;
+  --octopush-color-warning-text: #997A00;
+  --octopush-color-info-bg: #E0F0FF;
+  --octopush-color-info-text: #005BBF;
+  --octopush-color-error-bg: #FFE0E8;
+  --octopush-color-error-text: #CC0033;
+  --octopush-color-logo: #FF2D55;
 }
 
 /* Dark mode */
 [data-mantine-color-scheme="dark"] {
-  --bee-color-background: #0b0b0b;
-  --bee-color-surface: #141414;
-  --bee-color-elevated: #1d1d1d;
-  --bee-color-border: #2a2a2a;
-  --bee-color-input: #2a2a2a;
-  --bee-color-text-primary: #f2f2f2;
-  --bee-color-text-secondary: #bdbdbd;
-  --bee-color-text-muted: #8a8a8a;
-  --bee-color-success-bg: #1f3d0a;
-  --bee-color-success-text: #9ed93d;
-  --bee-color-warning-bg: #3d2800;
-  --bee-color-warning-text: #ffb830;
-  --bee-color-info-bg: #3d3400;
-  --bee-color-info-text: #ffd400;
-  --bee-color-error-bg: #2a0a0a;
-  --bee-color-error-text: #ff4444;
-  --bee-color-logo: #fbbf24;
+  --octopush-color-background: #000000;
+  --octopush-color-surface: #0A0A0A;
+  --octopush-color-elevated: #141414;
+  --octopush-color-border: #2A2A2A;
+  --octopush-color-input: #1A1A1A;
+  --octopush-color-text-primary: #FFFFFF;
+  --octopush-color-text-secondary: #A0A0A0;
+  --octopush-color-text-muted: #606060;
+  --octopush-color-success-bg: #0A2A06;
+  --octopush-color-success-text: #39FF14;
+  --octopush-color-warning-bg: #332800;
+  --octopush-color-warning-text: #FFCC00;
+  --octopush-color-info-bg: #001A3D;
+  --octopush-color-info-text: #3399FF;
+  --octopush-color-error-bg: #2A0010;
+  --octopush-color-error-text: #FF0040;
+  --octopush-color-logo: #FF2D55;
 }
 
-/* Shared (same in both modes) */
-:root {
-  --bee-color-primary: #ffd400;
-  --bee-color-sidebar: #111111;
-}
-
-/* Tailwind theme - generates utilities like bg-bee-background, text-bee-primary */
+/* Tailwind theme - generates utilities like bg-octopush-background, text-octopush-primary */
 @theme inline {
-  --color-bee-background: var(--bee-color-background);
-  --color-bee-surface: var(--bee-color-surface);
-  --color-bee-elevated: var(--bee-color-elevated);
-  --color-bee-border: var(--bee-color-border);
-  --color-bee-input: var(--bee-color-input);
-  --color-bee-text-primary: var(--bee-color-text-primary);
-  --color-bee-text-secondary: var(--bee-color-text-secondary);
-  --color-bee-text-muted: var(--bee-color-text-muted);
-  --color-bee-success-bg: var(--bee-color-success-bg);
-  --color-bee-success-text: var(--bee-color-success-text);
-  --color-bee-warning-bg: var(--bee-color-warning-bg);
-  --color-bee-warning-text: var(--bee-color-warning-text);
-  --color-bee-info-bg: var(--bee-color-info-bg);
-  --color-bee-info-text: var(--bee-color-info-text);
-  --color-bee-error-bg: var(--bee-color-error-bg);
-  --color-bee-error-text: var(--bee-color-error-text);
-  --color-bee-primary: var(--bee-color-primary);
-  --color-bee-sidebar: var(--bee-color-sidebar);
-  --color-bee-logo: var(--bee-color-logo);
+  --color-octopush-background: var(--octopush-color-background);
+  --color-octopush-surface: var(--octopush-color-surface);
+  --color-octopush-elevated: var(--octopush-color-elevated);
+  --color-octopush-border: var(--octopush-color-border);
+  --color-octopush-input: var(--octopush-color-input);
+  --color-octopush-text-primary: var(--octopush-color-text-primary);
+  --color-octopush-text-secondary: var(--octopush-color-text-secondary);
+  --color-octopush-text-muted: var(--octopush-color-text-muted);
+  --color-octopush-success-bg: var(--octopush-color-success-bg);
+  --color-octopush-success-text: var(--octopush-color-success-text);
+  --color-octopush-warning-bg: var(--octopush-color-warning-bg);
+  --color-octopush-warning-text: var(--octopush-color-warning-text);
+  --color-octopush-info-bg: var(--octopush-color-info-bg);
+  --color-octopush-info-text: var(--octopush-color-info-text);
+  --color-octopush-error-bg: var(--octopush-color-error-bg);
+  --color-octopush-error-text: var(--octopush-color-error-text);
+  --color-octopush-primary: var(--octopush-color-primary);
+  --color-octopush-sidebar: var(--octopush-color-sidebar);
+  --color-octopush-logo: var(--octopush-color-logo);
 }
 

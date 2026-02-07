@@ -21,8 +21,8 @@ export function ThemeToggle() {
       variant="subtle"
       aria-label="Toggle color scheme"
     >
-      {mounted && colorScheme === "dark" ? (
-        <IconSun size={20} />
+      {mounted ? (
+        colorScheme === "dark" ? <IconSun size={20} /> : <IconMoon size={20} />
       ) : (
         <IconMoon size={20} />
       )}

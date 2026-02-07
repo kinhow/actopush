@@ -2,7 +2,7 @@ import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
 // Routes that don't require authentication
-const publicRoutes = ["/signin", "/signup", "/auth"];
+const publicRoutes = ["/signin", "/signup", "/verify"];
 
 export async function proxy(request: NextRequest) {
   let supabaseResponse = NextResponse.next({
@@ -41,6 +41,7 @@ export async function proxy(request: NextRequest) {
   const isPublicRoute = publicRoutes.some((route) =>
     pathname.startsWith(route)
   );
+  const isOnboarding = pathname.startsWith("/onboarding");
 
   // Redirect unauthenticated users to signin (except for public routes)
   if (!user && !isPublicRoute) {
@@ -49,16 +50,40 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(url);
   }
 
-  // Redirect authenticated users away from auth pages
-  if (
-    user &&
-    isPublicRoute &&
-    pathname !== "/auth/callback" &&
-    pathname !== "/auth/confirm"
-  ) {
-    const url = request.nextUrl.clone();
-    url.pathname = "/";
-    return NextResponse.redirect(url);
+  if (user) {
+    // Redirect authenticated users away from public auth pages
+    // (except verify callbacks which need to complete)
+    if (
+      isPublicRoute &&
+      !pathname.startsWith("/verify/callback") &&
+      !pathname.startsWith("/verify/email")
+    ) {
+      const url = request.nextUrl.clone();
+      url.pathname = "/";
+      return NextResponse.redirect(url);
+    }
+
+    // Check org membership for onboarding enforcement
+    const { count } = await supabase
+      .from("org_memberships")
+      .select("id", { count: "exact", head: true })
+      .eq("user_id", user.id);
+
+    const hasOrg = count !== null && count > 0;
+
+    // No org + not on onboarding → redirect to onboarding
+    if (!hasOrg && !isOnboarding) {
+      const url = request.nextUrl.clone();
+      url.pathname = "/onboarding";
+      return NextResponse.redirect(url);
+    }
+
+    // Has org + on onboarding → redirect to dashboard
+    if (hasOrg && isOnboarding) {
+      const url = request.nextUrl.clone();
+      url.pathname = "/";
+      return NextResponse.redirect(url);
+    }
   }
 
   return supabaseResponse;

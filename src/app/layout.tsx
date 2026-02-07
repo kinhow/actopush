@@ -7,15 +7,14 @@ import {
   mantineHtmlProps,
   ColorSchemeScript,
 } from "@mantine/core";
-
 const openSans = Open_Sans({
   variable: "--font-open-sans",
   subsets: ["latin"],
 });
 
 export const metadata: Metadata = {
-  title: "Little Bee CRM Solutions",
-  description: "Little Bee CRM Solutions",
+  title: "OctoPush CRM Solutions",
+  description: "OctoPush CRM Solutions",
 };
 
 export default function RootLayout({
