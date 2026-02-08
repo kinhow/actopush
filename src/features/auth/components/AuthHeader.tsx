@@ -7,17 +7,17 @@ type AuthHeaderProps = {
 
 export function AuthHeader({ title, subtitle }: AuthHeaderProps) {
   return (
-    <Stack gap={8} align="center" w="100%">
+    <Stack gap="xs" align="center" w="100%">
       <Title
         order={2}
-        fz={24}
+        fz="xl"
         fw={700}
         ta="center"
-        classNames={{ root: "text-octopush-text-primary" }}
+        c="var(--octopush-color-foreground)"
       >
         {title}
       </Title>
-      <Text fz={14} ta="center" classNames={{ root: "text-octopush-text-muted" }}>
+      <Text fz="sm" ta="center" c="var(--octopush-color-foreground)">
         {subtitle}
       </Text>
     </Stack>

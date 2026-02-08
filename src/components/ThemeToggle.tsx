@@ -19,6 +19,8 @@ export function ThemeToggle() {
     <ActionIcon
       onClick={toggleColorScheme}
       variant="subtle"
+      radius="xl"
+      size={40}
       aria-label="Toggle color scheme"
     >
       {mounted ? (

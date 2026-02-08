@@ -13,7 +13,7 @@ export function FormErrorAlert({ message }: FormErrorAlertProps) {
       w="100%"
       radius="md"
       color="red"
-      bg="var(--color-octopush-error-bg)"
+      bg="var(--octopush-color-error)"
       icon={<IconAlertCircle size={16} />}
     >
       {message}

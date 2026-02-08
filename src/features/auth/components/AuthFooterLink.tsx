@@ -9,7 +9,7 @@ type AuthFooterLinkProps = {
 
 export function AuthFooterLink({ text, linkText, href }: AuthFooterLinkProps) {
   return (
-    <Text fz={14} className="text-octopush-text-muted">
+    <Text fz="sm" c="var(--octopush-color-foreground)">
       {text}{" "}
       <Link
         href={href}

@@ -9,8 +9,10 @@ export function SignOutButton() {
         type="submit"
         formAction={signOut}
         variant="subtle"
+        radius="xl"
+        size={40}
         aria-label="Sign out"
-        className="text-octopush-text-muted hover:text-octopush-text-primary"
+        classNames={{ root: "text-octopush-muted hover:text-octopush-foreground" }}
       >
         <IconLogout size={20} />
       </ActionIcon>

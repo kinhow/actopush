@@ -5,7 +5,6 @@ import { useActionState } from "react";
 import {
   Flex,
   Stack,
-  Center,
   Button,
   Divider,
   TextInput,
@@ -19,6 +18,7 @@ import {
   AUTH_DIVIDER_CLASSES,
   AUTH_PRIMARY_BUTTON_CLASSES,
 } from "../constants/styles";
+import { AuthLayout } from "../layout/AuthLayout";
 import { AuthHeader } from "./AuthHeader";
 import { AuthFooterLink } from "./AuthFooterLink";
 import { FormErrorAlert } from "./FormErrorAlert";
@@ -31,71 +31,69 @@ export function SignInForm() {
   );
 
   return (
-    <Center mih="100vh" className="bg-octopush-background">
-      <Stack w={400} gap={32} align="center">
-        <AuthHeader
-          title="Welcome back"
-          subtitle="Sign in to your OctoPush account"
-        />
+    <AuthLayout>
+      <AuthHeader
+        title="Welcome back"
+        subtitle="Sign in to your OctoPush account"
+      />
 
-        <Stack gap={16} w="100%">
-          <FormErrorAlert message={state?.errors?.form} />
+      <Stack gap="md" w="100%">
+        <FormErrorAlert message={state?.errors?.form} />
 
-          <form action={formAction}>
-            <Stack gap={16}>
-              <TextInput
-                name="email"
-                label="Email"
-                placeholder="Enter your email"
-                type="email"
-                radius="xl"
-                error={state?.errors?.email}
-                disabled={isPending}
-                classNames={AUTH_INPUT_CLASSES}
-              />
+        <form action={formAction}>
+          <Stack gap="md">
+            <TextInput
+              name="email"
+              label="Email"
+              placeholder="Enter your email"
+              type="email"
+              radius="xl"
+              error={state?.errors?.email}
+              disabled={isPending}
+              classNames={AUTH_INPUT_CLASSES}
+            />
 
-              <PasswordInput
-                name="password"
-                label="Password"
-                placeholder="Enter your password"
-                radius="xl"
-                error={state?.errors?.password}
-                disabled={isPending}
-                classNames={AUTH_INPUT_CLASSES}
-              />
+            <PasswordInput
+              name="password"
+              label="Password"
+              placeholder="Enter your password"
+              radius="xl"
+              error={state?.errors?.password}
+              disabled={isPending}
+              classNames={AUTH_INPUT_CLASSES}
+            />
 
-              <Flex justify="flex-end">
-                <Link
-                  href="/forgot-password"
-                  className="text-sm font-medium text-octopush-primary hover:underline"
-                >
-                  Forgot password?
-                </Link>
-              </Flex>
-
-              <Button
-                fullWidth
-                radius="xl"
-                type="submit"
-                loading={isPending}
-                classNames={AUTH_PRIMARY_BUTTON_CLASSES}
+            <Flex justify="flex-end">
+              <Link
+                href="/forgot-password"
+                className="text-sm font-medium text-octopush-primary hover:underline"
               >
-                Sign In
-              </Button>
-            </Stack>
-          </form>
+                Forgot password?
+              </Link>
+            </Flex>
 
-          <Divider label="or" labelPosition="center" classNames={AUTH_DIVIDER_CLASSES} />
+            <Button
+              fullWidth
+              radius="xl"
+              type="submit"
+              loading={isPending}
+              classNames={AUTH_PRIMARY_BUTTON_CLASSES}
+            >
+              Sign In
+            </Button>
+          </Stack>
+        </form>
 
-          <OAuthButton action={signInWithGoogle} />
-        </Stack>
+        <Divider label="or" labelPosition="center" classNames={AUTH_DIVIDER_CLASSES} />
 
-        <AuthFooterLink
-          text="Don't have an account?"
-          linkText="Sign up"
-          href="/signup"
-        />
+        <OAuthButton action={signInWithGoogle} />
       </Stack>
-    </Center>
+
+      <AuthFooterLink
+        text="Don't have an account?"
+        linkText="Sign up"
+        href="/signup"
+      />
+    </AuthLayout>
   );
 }

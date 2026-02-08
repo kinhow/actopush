@@ -7,7 +7,6 @@ export type NavItem = {
   icon: ComponentType<{ size?: number; stroke?: number }>;
   label: string;
   href: string;
-  active?: boolean;
 };
 
 /**

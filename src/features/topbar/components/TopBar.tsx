@@ -1,18 +1,12 @@
 import { Flex, Stack, Group, Text, TextInput, ActionIcon } from "@mantine/core";
 import { IconSearch, IconPlus } from "@tabler/icons-react";
-import { createClient } from "@/lib/supabase/server";
+import { getUser, getUserWithOrg } from "@/lib/supabase/queries";
+import { SignOutButton } from "@/features/auth/components/SignOutButton";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 export async function TopBar() {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  const { data: profile } = await supabase
-    .from("users")
-    .select("full_name, org_memberships(organizations(name))")
-    .eq("id", user!.id)
-    .single();
+  const user = await getUser();
+  const profile = await getUserWithOrg(user!.id);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any -- nested join types not generated
   const membership = profile?.org_memberships?.[0] as any;
@@ -29,35 +23,35 @@ export async function TopBar() {
   return (
     <Flex
       h={80}
-      px={32}
+      px="xl"
       align="center"
       justify="space-between"
-      className="border-b border-octopush-border"
+      classNames={{ root: "border-b border-octopush-divider" }}
     >
       {/* Left: Org name + subtitle */}
       <Stack gap={2}>
         <Text
           fw={700}
-          fz={24}
-          c="var(--octopush-color-text-primary)"
+          fz="xl"
+          c="var(--octopush-color-foreground)"
         >
           {orgName}'s Workspace
         </Text>
-        <Text fz={14} c="var(--octopush-color-text-muted)">
+        <Text fz="sm" c="var(--octopush-color-foreground)">
           Welcome back! Here&apos;s your CRM overview.
         </Text>
       </Stack>
 
       {/* Right: Search + Add button + Avatar */}
-      <Group gap={16}>
+      <Group gap="md">
         <TextInput
           placeholder="Search..."
-          leftSection={<IconSearch size={16} className="text-octopush-text-muted" />}
+          leftSection={<IconSearch size={16} className="text-octopush-muted" />}
           w={280}
           radius={2}
           classNames={{
             input:
-              "border-octopush-border bg-transparent text-sm placeholder:text-octopush-text-muted",
+              "border-octopush-divider bg-transparent text-sm placeholder:text-octopush-muted",
           }}
           readOnly
         />
@@ -71,17 +65,20 @@ export async function TopBar() {
           <IconPlus size={20} color="white" />
         </ActionIcon>
 
+        <ThemeToggle />
+        <SignOutButton />
+
         <Flex
           w={40}
           h={40}
           align="center"
           justify="center"
-          className="rounded-full border border-octopush-border bg-octopush-elevated"
+          classNames={{ root: "rounded-full border border-octopush-divider bg-octopush-elevated" }}
         >
           <Text
-            fz={14}
+            fz="sm"
             fw={600}
-            c="var(--octopush-color-text-primary)"
+            c="var(--octopush-color-foreground)"
           >
             {initials}
           </Text>

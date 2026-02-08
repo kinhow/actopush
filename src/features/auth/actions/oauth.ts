@@ -14,7 +14,7 @@ export async function signInWithGoogle() {
   });
 
   if (error) {
-    redirect("/auth/error?message=Could not authenticate with Google");
+    redirect("/verify/error");
   }
 
   if (data.url) {

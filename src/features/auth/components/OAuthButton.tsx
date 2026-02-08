@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from "@mantine/core";
 import { IconBrandGoogle } from "@tabler/icons-react";
 import { AUTH_OAUTH_BUTTON_CLASSES } from "../constants/styles";
