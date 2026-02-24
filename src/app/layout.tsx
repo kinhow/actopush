@@ -28,7 +28,9 @@ export default function RootLayout({
         <ColorSchemeScript />
       </head>
       <body className={`${openSans.variable} antialiased`}>
-        <MantineProvider theme={theme}>{children}</MantineProvider>
+        <MantineProvider theme={theme}>
+          {children}
+        </MantineProvider>
       </body>
     </html>
   );
