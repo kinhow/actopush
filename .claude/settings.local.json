@@ -1,0 +1,26 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__next-devtools__init",
+      "mcp__context7__resolve-library-id",
+      "mcp__context7__query-docs",
+      "mcp__supabase__search_docs",
+      "mcp__next-devtools__nextjs_docs",
+      "mcp__next-devtools__nextjs_index",
+      "mcp__supabase__get_logs",
+      "mcp__next-devtools__nextjs_call",
+      "mcp__supabase__list_tables",
+      "mcp__supabase__execute_sql",
+      "Bash(find . -name \"tailwind.config.*\" -o -name \".env.example\" 2>/dev/null | head -20)",
+      "WebSearch",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "WebFetch(domain:reactflow.dev)",
+      "WebFetch(domain:github.com)",
+      "Bash(python3 -c \"\nimport json\nwith open\\('/Users/wkhow/.claude/projects/-Users-wkhow-Desktop-Desktop---Wong-s-MacBook-Air-workplace-octopush/cd2e4e76-41be-43ec-9bb3-d7260098bbe4/tool-results/toolu_01TWaPwKuShHhdZ8fcfesgsW.json'\\) as f:\n    data = json.load\\(f\\)\n# Print the full text of item 0\nprint\\(data[0]['text']\\)\n\" 2>&1 | head -5000)"
+    ]
+  },
+  "enableAllProjectMcpServers": true,
+  "enabledMcpjsonServers": [
+    "supabase"
+  ]
+}

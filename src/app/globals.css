@@ -1,26 +1,59 @@
-@import "tailwindcss";
+@layer theme, base, mantine, components, utilities;
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/preflight.css" layer(base);
+@import "tailwindcss/utilities.css" layer(utilities);
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@import "@mantine/core/styles.layer.css";
+@import "tailwind-preset-mantine/theme.css";
+
+/* Light mode (default) */
+:root,
+[data-mantine-color-scheme="light"] {
+  --octopush-color-primary: #FF2D55;
+  --octopush-color-base: #F8F8F8;
+  --octopush-color-surface: #FFFFFF;
+  --octopush-color-elevated: #F0F0F0;
+  --octopush-color-divider: #D0D0D0;
+  --octopush-color-input: #E0E0E0;
+  --octopush-color-foreground: #1A1A1A;
+  --octopush-color-subtle: #4A4A4A;
+  --octopush-color-muted: #808080;
+  --octopush-color-success: #E8FFE0;
+  --octopush-color-success-foreground: #1A8A0A;
+  --octopush-color-error: #FFE0E8;
+  --octopush-color-error-foreground: #CC0033;
 }
 
+/* Dark mode */
+[data-mantine-color-scheme="dark"] {
+  --octopush-color-primary: #FF2D55;
+  --octopush-color-base: #000000;
+  --octopush-color-surface: #0A0A0A;
+  --octopush-color-elevated: #141414;
+  --octopush-color-divider: #2A2A2A;
+  --octopush-color-input: #1A1A1A;
+  --octopush-color-foreground: #FFFFFF;
+  --octopush-color-subtle: #A0A0A0;
+  --octopush-color-muted: #606060;
+  --octopush-color-success: #0A2A06;
+  --octopush-color-success-foreground: #39FF14;
+  --octopush-color-error: #2A0010;
+  --octopush-color-error-foreground: #FF0040;
+}
+
+/* Tailwind theme — bridges semantic tokens to Tailwind utilities */
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  --color-octopush-base: var(--octopush-color-base);
+  --color-octopush-surface: var(--octopush-color-surface);
+  --color-octopush-elevated: var(--octopush-color-elevated);
+  --color-octopush-divider: var(--octopush-color-divider);
+  --color-octopush-input: var(--octopush-color-input);
+  --color-octopush-foreground: var(--octopush-color-foreground);
+  --color-octopush-subtle: var(--octopush-color-subtle);
+  --color-octopush-muted: var(--octopush-color-muted);
+  --color-octopush-primary: var(--octopush-color-primary);
+  --color-octopush-success: var(--octopush-color-success);
+  --color-octopush-success-foreground: var(--octopush-color-success-foreground);
+  --color-octopush-error: var(--octopush-color-error);
+  --color-octopush-error-foreground: var(--octopush-color-error-foreground);
 }
