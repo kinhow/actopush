@@ -99,6 +99,9 @@ CREATE TABLE contacts (
   opt_in_at TIMESTAMPTZ,
   opt_in_source TEXT,
   last_message_at TIMESTAMPTZ,
+  birthday DATE,
+  lifecycle_stage TEXT DEFAULT 'lead'
+    CHECK (lifecycle_stage IN ('lead', 'prospect', 'customer', 'churned')),
   custom_fields JSONB DEFAULT '{}',
   deleted_at TIMESTAMPTZ,
   created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
@@ -414,6 +417,8 @@ CREATE TABLE activity_log (
   entity_id UUID,
   action TEXT NOT NULL,
   details JSONB DEFAULT '{}',
+  is_notification BOOLEAN DEFAULT false,
+  read_at TIMESTAMPTZ,
   created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 ```
@@ -432,6 +437,26 @@ CREATE TABLE activity_log (
 | flow | `created`, `activated`, `deactivated`, `archived` |
 | segment | `created`, `updated`, `deleted` |
 
+### 3.17 CTA Clicks
+
+```sql
+CREATE TABLE cta_clicks (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  org_id UUID NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
+  tracking_id UUID NOT NULL,
+  campaign_id UUID NOT NULL REFERENCES campaigns(id) ON DELETE CASCADE,
+  contact_id UUID NOT NULL REFERENCES contacts(id) ON DELETE CASCADE,
+  destination_url TEXT NOT NULL,
+  clicked_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  click_count INTEGER NOT NULL DEFAULT 1,
+  user_agent TEXT,
+  ip_hash TEXT,
+  UNIQUE(tracking_id, contact_id)
+);
+```
+
+> See [PRD-whatsapp.md Section 4.4](./PRD-whatsapp.md#44-cta-click-tracking) for full CTA tracking architecture.
+
 ---
 
 ## 4. Indexes
@@ -446,6 +471,8 @@ CREATE INDEX idx_contacts_org_name ON contacts(org_id, full_name);
 CREATE INDEX idx_contacts_org_source ON contacts(org_id, source);
 CREATE INDEX idx_contacts_org_opt_in ON contacts(org_id, opt_in_status);
 CREATE INDEX idx_contacts_org_deleted ON contacts(org_id) WHERE deleted_at IS NULL;
+CREATE INDEX idx_contacts_org_birthday ON contacts(org_id, birthday) WHERE birthday IS NOT NULL;
+CREATE INDEX idx_contacts_org_lifecycle ON contacts(org_id, lifecycle_stage);
 -- Full-text search index
 CREATE INDEX idx_contacts_search ON contacts USING GIN (
   to_tsvector('english', coalesce(full_name, '') || ' ' || coalesce(phone, '') || ' ' || coalesce(email, '') || ' ' || coalesce(company, ''))
@@ -507,11 +534,20 @@ CREATE INDEX idx_webhook_logs_unprocessed ON webhook_logs(received_at)
 CREATE INDEX idx_webhook_logs_org ON webhook_logs(org_id, received_at DESC);
 
 -- ============================================================
+-- CTA CLICKS
+-- ============================================================
+CREATE INDEX idx_cta_clicks_tracking ON cta_clicks(tracking_id);
+CREATE INDEX idx_cta_clicks_campaign_contact ON cta_clicks(campaign_id, contact_id);
+CREATE INDEX idx_cta_clicks_org ON cta_clicks(org_id, clicked_at DESC);
+
+-- ============================================================
 -- ACTIVITY LOG
 -- ============================================================
 CREATE INDEX idx_activity_log_org_created ON activity_log(org_id, created_at DESC);
 CREATE INDEX idx_activity_log_contact ON activity_log(contact_id, created_at DESC);
 CREATE INDEX idx_activity_log_entity ON activity_log(entity_type, entity_id);
+CREATE INDEX idx_activity_log_notifications ON activity_log(user_id, created_at DESC)
+  WHERE is_notification = true AND read_at IS NULL;
 
 -- ============================================================
 -- CONTACT TAGS
@@ -552,7 +588,7 @@ CREATE POLICY "org_isolation" ON {table_name}
   );
 ```
 
-**Apply to:** contacts, tags, conversations, messages, templates, campaigns, campaign_contacts (via campaign.org_id), segments, segment_contacts (via segment.org_id), automation_flows, flow_executions, canned_responses, activity_log, whatsapp_accounts
+**Apply to:** contacts, tags, conversations, messages, templates, campaigns, campaign_contacts (via campaign.org_id), segments, segment_contacts (via segment.org_id), automation_flows, flow_executions, canned_responses, activity_log, cta_clicks, whatsapp_accounts
 
 ### 5.2 Join Table Policies
 
@@ -1296,7 +1332,7 @@ Supabase migrations live in `supabase/migrations/` and are applied via `supabase
 | 2 | `002_whatsapp_accounts.sql` | whatsapp_accounts + vault setup + RLS |
 | 3 | `003_conversations_and_messages.sql` | conversations, messages tables + indexes + RLS + Realtime |
 | 4 | `004_templates.sql` | templates table + indexes + RLS + usage trigger |
-| 5 | `005_campaigns.sql` | campaigns, campaign_contacts + indexes + RLS + count trigger |
+| 5 | `005_campaigns.sql` | campaigns, campaign_contacts, cta_clicks + indexes + RLS + count trigger |
 | 6 | `006_segments.sql` | segments, segment_contacts + indexes + RLS |
 | 7 | `007_automation_flows.sql` | automation_flows, flow_executions + indexes + RLS |
 | 8 | `008_supporting_tables.sql` | webhook_logs, canned_responses, activity_log + indexes + RLS |

@@ -26,6 +26,11 @@
 11. [Non-Functional Requirements](#11-non-functional-requirements)
 12. [Risks and Mitigations](#12-risks-and-mitigations)
 13. [Open Questions](#13-open-questions)
+14. [Error Code Catalog](#14-error-code-catalog)
+15. [Testing Strategy](#15-testing-strategy)
+16. [Monitoring and Error Tracking](#16-monitoring-and-error-tracking)
+17. [Notification System](#17-notification-system)
+18. [Deployment and Environment](#18-deployment-and-environment)
 
 ---
 
@@ -315,6 +320,8 @@ Real-time event feed — right sidebar on wide screens (>1440px), below charts o
 | `opt_in_at` | timestamptz | no | When opted in |
 | `opt_in_source` | text | no | `form`, `whatsapp`, `import`, `manual` |
 | `last_message_at` | timestamptz | no | Most recent message timestamp |
+| `birthday` | date | no | Contact's birthday (for birthday campaigns/triggers) |
+| `lifecycle_stage` | text | no | `lead` / `prospect` / `customer` / `churned` (default: `lead`) |
 | `custom_fields` | jsonb | no | Org-defined custom fields |
 | `deleted_at` | timestamptz | no | Soft delete |
 | `created_at` | timestamptz | auto | Created |
@@ -873,6 +880,11 @@ Chrome 111+, Edge 111+, Firefox 111+, Safari 16.4+ (Next.js 16 default browsersl
 
 ## 13. Open Questions
 
+### Resolved
+
+- **Multi-org membership**: Phase 1 supports single organization per user. Organization switcher UI deferred to Phase 3+ if multi-org membership is needed. The `org_memberships` table already supports it at the data layer.
+- **Notifications**: In-app notification center (Phase 1) with bell icon in header. Browser push and email digests deferred to Phase 2. See Section 17.
+
 ### Product
 
 1. **Pricing model**: Per-message, flat subscription, or tiered plans?
@@ -896,6 +908,240 @@ Chrome 111+, Edge 111+, Firefox 111+, Safari 16.4+ (Next.js 16 default browsersl
 
 ### Integrations
 
-13. **Notifications**: In-app only? Email? Browser push? Which events?
+13. ~~**Notifications**: In-app only? Email? Browser push? Which events?~~ → **Resolved.** See Section 17.
 14. **External API**: Expose REST API for third-party integrations?
 15. **Report export**: PDF/CSV dashboard reports? Scheduled email delivery?
+
+---
+
+## 14. Error Code Catalog
+
+Consistent error codes used in `ActionState` responses from server actions. Frontend can match on `errors.code` for user-facing messages and retry logic.
+
+### Authentication
+
+| Code | Description |
+|------|-------------|
+| `AUTH_001` | Invalid credentials |
+| `AUTH_002` | Session expired — re-authentication required |
+| `AUTH_003` | Insufficient permissions for this action |
+| `AUTH_004` | Email not verified |
+| `AUTH_005` | Account disabled |
+
+### Contacts
+
+| Code | Description |
+|------|-------------|
+| `CONTACT_001` | Contact not found |
+| `CONTACT_002` | Duplicate phone number in this organization |
+| `CONTACT_003` | Invalid phone format (must be E.164) |
+| `CONTACT_004` | Contact is soft-deleted |
+| `CONTACT_005` | Import validation failed — see `details` for row errors |
+
+### WhatsApp
+
+| Code | Description |
+|------|-------------|
+| `WA_001` | WhatsApp API error — see `details` for Meta error code |
+| `WA_002` | Template not approved by Meta |
+| `WA_003` | Messaging tier rate limit exceeded |
+| `WA_004` | Recipient not on WhatsApp |
+| `WA_005` | 24-hour window expired — use template message |
+| `WA_006` | WhatsApp account not connected |
+| `WA_007` | Quality rating too low — sending restricted |
+
+### Campaigns
+
+| Code | Description |
+|------|-------------|
+| `CAMPAIGN_001` | Campaign not found |
+| `CAMPAIGN_002` | No eligible contacts in audience (all opted out or no phone) |
+| `CAMPAIGN_003` | Campaign already sent — cannot modify |
+| `CAMPAIGN_004` | Template required for campaign messages |
+
+### Automation Flows
+
+| Code | Description |
+|------|-------------|
+| `FLOW_001` | Flow not found |
+| `FLOW_002` | Invalid flow structure — see `details` for validation errors |
+| `FLOW_003` | Flow execution failed |
+| `FLOW_004` | Maximum active flows reached (50 per org) |
+| `FLOW_005` | Concurrent execution limit — contact already in this flow |
+
+### Templates
+
+| Code | Description |
+|------|-------------|
+| `TEMPLATE_001` | Template not found |
+| `TEMPLATE_002` | Template rejected by Meta — see `details.rejection_reason` |
+| `TEMPLATE_003` | Template pending approval — cannot use yet |
+
+---
+
+## 15. Testing Strategy
+
+### Unit Tests (Vitest)
+
+| Area | What to Test |
+|------|-------------|
+| **Zod schemas** | All validation schemas (contact, campaign, template, flow definition) — valid/invalid inputs |
+| **Flow execution engine** | Node handlers (send_template, condition, delay, etc.), variable resolution, edge traversal |
+| **Webhook handlers** | Inbound message parsing, status update processing, signature verification |
+| **Utility functions** | E.164 phone formatting, template variable substitution, segment rule evaluation |
+
+### Integration Tests (Vitest + Supabase local)
+
+| Area | What to Test |
+|------|-------------|
+| **Server actions** | CRUD operations with real Supabase client — contacts, campaigns, templates, flows |
+| **RLS policies** | Cross-org data isolation, role-based access |
+| **Database triggers** | Campaign count aggregation, template usage counter, conversation window expiry |
+| **Edge Functions** | Webhook processing, campaign send batching, flow execution |
+
+### E2E Tests (Playwright)
+
+| Flow | Critical Path |
+|------|--------------|
+| **Authentication** | Sign up → verify email → sign in → dashboard redirect |
+| **Contact CRUD** | Create contact → view in list → edit → soft delete → restore from trash |
+| **Conversation** | Open conversation → send message → verify delivery status → 24hr window expiry |
+| **Campaign send** | Create campaign → select audience → choose template → schedule → send → verify analytics |
+| **Flow builder** | Create flow → add nodes → connect edges → validate → activate → verify trigger |
+
+### Test Infrastructure
+
+- **CI**: Run unit + integration on every PR; E2E on merge to main
+- **Supabase local**: `supabase start` for integration tests with seeded data
+- **Test data**: Factory functions for contacts, conversations, messages, campaigns
+
+---
+
+## 16. Monitoring and Error Tracking
+
+### Error Tracking
+
+- **Tool**: Sentry (or equivalent)
+- **Client errors**: React error boundaries report to Sentry with user context (org_id, user_id — no PII)
+- **Server errors**: Server actions and Edge Functions report unhandled exceptions
+- **Source maps**: Upload source maps to Sentry on deploy for readable stack traces
+
+### Performance Monitoring
+
+| Metric | Target | Tool |
+|--------|--------|------|
+| LCP (Largest Contentful Paint) | < 2s | Web Vitals via `next/third-parties` |
+| CLS (Cumulative Layout Shift) | < 0.1 | Web Vitals |
+| INP (Interaction to Next Paint) | < 200ms | Web Vitals |
+| Server action latency (p95) | < 500ms | Sentry performance |
+| Edge Function latency (p95) | < 5s | Supabase dashboard |
+
+### Alerting
+
+| Event | Severity | Channel |
+|-------|----------|---------|
+| Webhook processing failure rate > 5% | Critical | Slack/email |
+| Campaign send failure rate > 10% | Critical | Slack/email |
+| Edge Function timeout | Warning | Slack |
+| WhatsApp quality rating → RED | Critical | In-app + Slack/email |
+| Error rate spike (> 2x baseline) | Warning | Sentry alert |
+
+### Environment Variables
+
+```bash
+SENTRY_DSN=https://xxx@sentry.io/xxx
+NEXT_PUBLIC_SENTRY_DSN=https://xxx@sentry.io/xxx  # Client-side
+SENTRY_AUTH_TOKEN=sntrys_xxx  # Source map uploads in CI
+```
+
+---
+
+## 17. Notification System
+
+### Phase 1 — In-App Notifications
+
+**UI:** Bell icon in the dashboard header with unread count badge.
+
+**Notification Center (dropdown):**
+- List of notifications, newest first
+- Each shows: icon, title, description, timestamp, read/unread indicator
+- "Mark as read" on click; "Mark all as read" action
+- Click navigates to relevant page (e.g., click campaign-complete → campaign detail)
+
+**Notification Types:**
+
+| Event | Recipients | Priority |
+|-------|-----------|----------|
+| Conversation assigned to you | Assigned agent | High |
+| New unassigned conversation | All agents in org | Normal |
+| Campaign send completed | Campaign creator | Normal |
+| Campaign send failed | Campaign creator + admins | High |
+| Template approved by Meta | Template creator | Normal |
+| Template rejected by Meta | Template creator + admins | High |
+| WhatsApp quality rating changed | Owner + admins | High (if RED) |
+| Flow execution failed | Flow creator | Normal |
+| Contact import completed | Import initiator | Normal |
+
+**Data Model:** Notifications stored in `activity_log` table (already exists) with `is_notification = true` flag and `read_at` timestamp. Query: `SELECT * FROM activity_log WHERE user_id = ? AND is_notification = true ORDER BY created_at DESC LIMIT 50`.
+
+**Real-time:** Subscribe to `activity_log` INSERT events for current user via Supabase Realtime.
+
+### Phase 2 — Extended Notifications
+
+- **Browser push notifications** for high-priority events (conversation assignment, quality alerts)
+- **Email digests**: Daily summary of unread notifications (configurable per user)
+- **Notification preferences**: Per-type enable/disable in user settings
+
+---
+
+## 18. Deployment and Environment
+
+### Hosting Architecture
+
+| Component | Provider | Notes |
+|-----------|----------|-------|
+| Frontend + Server Actions | **Vercel** | Auto-deploy from GitHub; preview deploys on PRs |
+| Database + Auth + Storage + Realtime | **Supabase** | Managed PostgreSQL, daily backups, PITR on Pro plan |
+| Edge Functions | **Supabase** | process-webhook, send-campaign, execute-flow, schedule-runner |
+| Cron Jobs | **Supabase pg_cron** | Inside PostgreSQL — no external scheduler needed |
+| DNS/SSL | **Vercel** | Automatic HTTPS |
+
+### Required Environment Variables
+
+```bash
+# Supabase
+NEXT_PUBLIC_SUPABASE_URL=https://xxxxx.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6...
+SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6...
+
+# WhatsApp Business API
+WHATSAPP_API_VERSION=v21.0
+WHATSAPP_APP_SECRET=xxxxxxx
+WHATSAPP_VERIFY_TOKEN=your_custom_verify_token
+# Note: Per-org WhatsApp access tokens stored in Supabase Vault, NOT in env vars
+
+# App
+NEXT_PUBLIC_APP_URL=https://app.octopush.com
+
+# Error Tracking (optional)
+SENTRY_DSN=https://xxx@sentry.io/xxx
+NEXT_PUBLIC_SENTRY_DSN=https://xxx@sentry.io/xxx
+SENTRY_AUTH_TOKEN=sntrys_xxx
+```
+
+### CI/CD Pipeline
+
+1. **Push to branch** → Vercel creates preview deployment
+2. **PR opened** → Biome lint + type check + unit tests run in CI
+3. **Merge to main** → Vercel deploys to production; E2E tests run post-deploy
+4. **Database migrations** → Applied manually via `supabase db push` before deploy (see [PRD-supabase.md Section 13](./PRD-supabase.md#13-migration-strategy))
+
+### Cron Jobs (pg_cron inside Supabase)
+
+| Job | Schedule | Function |
+|-----|----------|----------|
+| Check expired conversation windows | Every 5 min | `check_expired_conversations()` |
+| Process scheduled flows + delayed resumes | Every 1 min | `schedule-runner` Edge Function |
+| Purge old webhook logs (> 90 days) | Daily at 3 AM | SQL DELETE |
+| Purge old activity logs (> 1 year) | Daily at 4 AM | SQL DELETE |
+| Refresh segment counts | Every hour | `refresh_segment_counts()` |

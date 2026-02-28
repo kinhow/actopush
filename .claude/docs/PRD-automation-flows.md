@@ -116,6 +116,7 @@ pnpm add @xyflow/react
 | **Auto-layout** | Button in toolbar — applies dagre layout algorithm |
 | **Grid snap** | 20px grid snapping for clean alignment |
 | **Copy/paste** | Ctrl+C/V for selected nodes (duplicates with offset) |
+| **Export/Import JSON** *(Phase 2)* | Export flow definition as JSON file; import to create new flow from JSON. Useful for debugging, sharing, and backup |
 
 ### 3.3 Node Configuration
 

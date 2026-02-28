@@ -24,6 +24,7 @@
 14. [Security Requirements](#14-security-requirements)
 15. [Error Handling](#15-error-handling)
 16. [Media Handling](#16-media-handling)
+17. [Appendix: Template Examples](#17-appendix-template-examples)
 
 ---
 
@@ -858,3 +859,59 @@ while attempt <= max_retries:
 | Audio | 16 MB | AAC, MP4, MPEG, AMR, OGG |
 | Document | 100 MB | PDF, DOCX, XLSX, PPTX, etc. |
 | Sticker | 100 KB (static), 500 KB (animated) | WebP |
+
+---
+
+## 17. Appendix: Template Examples
+
+Reference templates for developers building the template builder UI and for onboarding content.
+
+### Birthday Wishes Template
+
+```
+Name: birthday_wishes
+Category: MARKETING
+Language: en
+
+Header: Happy Birthday, {{1}}!
+Body: We're celebrating YOUR special day with an exclusive {{2}} discount! Use code: BDAY{{3}}. Valid until {{4}}. Don't miss out!
+Footer: Reply STOP to unsubscribe
+Buttons:
+  - [Shop Now] → URL: https://example.com/shop?promo={{5}}
+  - [View Offers] → URL: https://example.com/offers
+```
+
+**Variables:** `{{1}}` = contact name, `{{2}}` = discount %, `{{3}}` = unique code suffix, `{{4}}` = expiry date, `{{5}}` = promo code
+
+### Welcome New Customer Template
+
+```
+Name: welcome_new_customer
+Category: MARKETING
+Language: en
+
+Header: Welcome to {{1}}!
+Body: Hi {{2}}, thanks for joining us! Here's what you can expect: exclusive offers, birthday rewards, and easy ordering via WhatsApp. Reply with "HI" to get started!
+Footer: Powered by WhatsApp Business
+Buttons:
+  - [Browse Products] → URL: https://example.com/products
+  - [Contact Us] → QUICK_REPLY: contact_us
+```
+
+**Variables:** `{{1}}` = business name, `{{2}}` = contact name
+
+### Re-activation Template
+
+```
+Name: reactivation_offer
+Category: MARKETING
+Language: en
+
+Header: We miss you, {{1}}!
+Body: It's been a while since your last visit. We'd love to see you again! Enjoy {{2}} off your next purchase. This offer expires on {{3}}.
+Footer: Reply STOP to unsubscribe
+Buttons:
+  - [Claim Offer] → URL: https://example.com/claim?code={{4}}
+```
+
+**Variables:** `{{1}}` = contact name, `{{2}}` = discount %, `{{3}}` = expiry date, `{{4}}` = offer code
