@@ -6,43 +6,10 @@
 @import "@mantine/core/styles.layer.css";
 @import "tailwind-preset-mantine/theme.css";
 
-/* Light mode (default) */
-:root,
-[data-mantine-color-scheme="light"] {
-  --octopush-color-primary: #FF2D55;
-  --octopush-color-base: #F8F8F8;
-  --octopush-color-surface: #FFFFFF;
-  --octopush-color-elevated: #F0F0F0;
-  --octopush-color-divider: #D0D0D0;
-  --octopush-color-input: #E0E0E0;
-  --octopush-color-foreground: #1A1A1A;
-  --octopush-color-subtle: #4A4A4A;
-  --octopush-color-muted: #808080;
-  --octopush-color-success: #E8FFE0;
-  --octopush-color-success-foreground: #1A8A0A;
-  --octopush-color-error: #FFE0E8;
-  --octopush-color-error-foreground: #CC0033;
-}
-
-/* Dark mode */
-[data-mantine-color-scheme="dark"] {
-  --octopush-color-primary: #FF2D55;
-  --octopush-color-base: #000000;
-  --octopush-color-surface: #0A0A0A;
-  --octopush-color-elevated: #141414;
-  --octopush-color-divider: #2A2A2A;
-  --octopush-color-input: #1A1A1A;
-  --octopush-color-foreground: #FFFFFF;
-  --octopush-color-subtle: #A0A0A0;
-  --octopush-color-muted: #606060;
-  --octopush-color-success: #0A2A06;
-  --octopush-color-success-foreground: #39FF14;
-  --octopush-color-error: #2A0010;
-  --octopush-color-error-foreground: #FF0040;
-}
-
-/* Tailwind theme — bridges semantic tokens to Tailwind utilities */
+/* Tailwind theme — bridges Mantine CSS vars to Tailwind utilities */
 @theme inline {
+  /* Semantic tokens (auto light/dark via cssVariablesResolver) */
+  --color-octopush-primary: var(--octopush-color-primary);
   --color-octopush-base: var(--octopush-color-base);
   --color-octopush-surface: var(--octopush-color-surface);
   --color-octopush-elevated: var(--octopush-color-elevated);
@@ -51,9 +18,179 @@
   --color-octopush-foreground: var(--octopush-color-foreground);
   --color-octopush-subtle: var(--octopush-color-subtle);
   --color-octopush-muted: var(--octopush-color-muted);
-  --color-octopush-primary: var(--octopush-color-primary);
   --color-octopush-success: var(--octopush-color-success);
   --color-octopush-success-foreground: var(--octopush-color-success-foreground);
   --color-octopush-error: var(--octopush-color-error);
   --color-octopush-error-foreground: var(--octopush-color-error-foreground);
+
+  /* Palette shades: octopush-base */
+  --color-octopush-base-50: var(--mantine-color-octopush-base-0);
+  --color-octopush-base-100: var(--mantine-color-octopush-base-1);
+  --color-octopush-base-200: var(--mantine-color-octopush-base-2);
+  --color-octopush-base-300: var(--mantine-color-octopush-base-3);
+  --color-octopush-base-400: var(--mantine-color-octopush-base-4);
+  --color-octopush-base-500: var(--mantine-color-octopush-base-5);
+  --color-octopush-base-600: var(--mantine-color-octopush-base-6);
+  --color-octopush-base-700: var(--mantine-color-octopush-base-7);
+  --color-octopush-base-800: var(--mantine-color-octopush-base-8);
+  --color-octopush-base-900: var(--mantine-color-octopush-base-9);
+
+  /* Palette shades: octopush-border-dark */
+  --color-octopush-border-dark-50: var(--mantine-color-octopush-border-dark-0);
+  --color-octopush-border-dark-100: var(--mantine-color-octopush-border-dark-1);
+  --color-octopush-border-dark-200: var(--mantine-color-octopush-border-dark-2);
+  --color-octopush-border-dark-300: var(--mantine-color-octopush-border-dark-3);
+  --color-octopush-border-dark-400: var(--mantine-color-octopush-border-dark-4);
+  --color-octopush-border-dark-500: var(--mantine-color-octopush-border-dark-5);
+  --color-octopush-border-dark-600: var(--mantine-color-octopush-border-dark-6);
+  --color-octopush-border-dark-700: var(--mantine-color-octopush-border-dark-7);
+  --color-octopush-border-dark-800: var(--mantine-color-octopush-border-dark-8);
+  --color-octopush-border-dark-900: var(--mantine-color-octopush-border-dark-9);
+
+  /* Palette shades: octopush-border-light */
+  --color-octopush-border-light-50: var(--mantine-color-octopush-border-light-0);
+  --color-octopush-border-light-100: var(
+    --mantine-color-octopush-border-light-1
+  );
+  --color-octopush-border-light-200: var(
+    --mantine-color-octopush-border-light-2
+  );
+  --color-octopush-border-light-300: var(
+    --mantine-color-octopush-border-light-3
+  );
+  --color-octopush-border-light-400: var(
+    --mantine-color-octopush-border-light-4
+  );
+  --color-octopush-border-light-500: var(
+    --mantine-color-octopush-border-light-5
+  );
+  --color-octopush-border-light-600: var(
+    --mantine-color-octopush-border-light-6
+  );
+  --color-octopush-border-light-700: var(
+    --mantine-color-octopush-border-light-7
+  );
+  --color-octopush-border-light-800: var(
+    --mantine-color-octopush-border-light-8
+  );
+  --color-octopush-border-light-900: var(
+    --mantine-color-octopush-border-light-9
+  );
+
+  /* Palette shades: octopush-black */
+  --color-octopush-black-50: var(--mantine-color-octopush-black-0);
+  --color-octopush-black-100: var(--mantine-color-octopush-black-1);
+  --color-octopush-black-200: var(--mantine-color-octopush-black-2);
+  --color-octopush-black-300: var(--mantine-color-octopush-black-3);
+  --color-octopush-black-400: var(--mantine-color-octopush-black-4);
+  --color-octopush-black-500: var(--mantine-color-octopush-black-5);
+  --color-octopush-black-600: var(--mantine-color-octopush-black-6);
+  --color-octopush-black-700: var(--mantine-color-octopush-black-7);
+  --color-octopush-black-800: var(--mantine-color-octopush-black-8);
+  --color-octopush-black-900: var(--mantine-color-octopush-black-9);
+  --color-octopush-black: var(--mantine-color-octopush-black-filled);
+
+  /* Palette shades: octopush-red */
+  --color-octopush-red-50: var(--mantine-color-octopush-red-0);
+  --color-octopush-red-100: var(--mantine-color-octopush-red-1);
+  --color-octopush-red-200: var(--mantine-color-octopush-red-2);
+  --color-octopush-red-300: var(--mantine-color-octopush-red-3);
+  --color-octopush-red-400: var(--mantine-color-octopush-red-4);
+  --color-octopush-red-500: var(--mantine-color-octopush-red-5);
+  --color-octopush-red-600: var(--mantine-color-octopush-red-6);
+  --color-octopush-red-700: var(--mantine-color-octopush-red-7);
+  --color-octopush-red-800: var(--mantine-color-octopush-red-8);
+  --color-octopush-red-900: var(--mantine-color-octopush-red-9);
+  --color-octopush-red: var(--mantine-color-octopush-red-filled);
+
+  /* Palette shades: octopush-cyan */
+  --color-octopush-cyan-50: var(--mantine-color-octopush-cyan-0);
+  --color-octopush-cyan-100: var(--mantine-color-octopush-cyan-1);
+  --color-octopush-cyan-200: var(--mantine-color-octopush-cyan-2);
+  --color-octopush-cyan-300: var(--mantine-color-octopush-cyan-3);
+  --color-octopush-cyan-400: var(--mantine-color-octopush-cyan-4);
+  --color-octopush-cyan-500: var(--mantine-color-octopush-cyan-5);
+  --color-octopush-cyan-600: var(--mantine-color-octopush-cyan-6);
+  --color-octopush-cyan-700: var(--mantine-color-octopush-cyan-7);
+  --color-octopush-cyan-800: var(--mantine-color-octopush-cyan-8);
+  --color-octopush-cyan-900: var(--mantine-color-octopush-cyan-9);
+  --color-octopush-cyan: var(--mantine-color-octopush-cyan-filled);
+
+  /* Palette shades: octopush-orange */
+  --color-octopush-orange-50: var(--mantine-color-octopush-orange-0);
+  --color-octopush-orange-100: var(--mantine-color-octopush-orange-1);
+  --color-octopush-orange-200: var(--mantine-color-octopush-orange-2);
+  --color-octopush-orange-300: var(--mantine-color-octopush-orange-3);
+  --color-octopush-orange-400: var(--mantine-color-octopush-orange-4);
+  --color-octopush-orange-500: var(--mantine-color-octopush-orange-5);
+  --color-octopush-orange-600: var(--mantine-color-octopush-orange-6);
+  --color-octopush-orange-700: var(--mantine-color-octopush-orange-7);
+  --color-octopush-orange-800: var(--mantine-color-octopush-orange-8);
+  --color-octopush-orange-900: var(--mantine-color-octopush-orange-9);
+  --color-octopush-orange: var(--mantine-color-octopush-orange-filled);
+
+  /* Palette shades: octopush-green */
+  --color-octopush-green-50: var(--mantine-color-octopush-green-0);
+  --color-octopush-green-100: var(--mantine-color-octopush-green-1);
+  --color-octopush-green-200: var(--mantine-color-octopush-green-2);
+  --color-octopush-green-300: var(--mantine-color-octopush-green-3);
+  --color-octopush-green-400: var(--mantine-color-octopush-green-4);
+  --color-octopush-green-500: var(--mantine-color-octopush-green-5);
+  --color-octopush-green-600: var(--mantine-color-octopush-green-6);
+  --color-octopush-green-700: var(--mantine-color-octopush-green-7);
+  --color-octopush-green-800: var(--mantine-color-octopush-green-8);
+  --color-octopush-green-900: var(--mantine-color-octopush-green-9);
+  --color-octopush-green: var(--mantine-color-octopush-green-filled);
+
+  /* Palette shades: octopush-danger */
+  --color-octopush-danger-50: var(--mantine-color-octopush-danger-0);
+  --color-octopush-danger-100: var(--mantine-color-octopush-danger-1);
+  --color-octopush-danger-200: var(--mantine-color-octopush-danger-2);
+  --color-octopush-danger-300: var(--mantine-color-octopush-danger-3);
+  --color-octopush-danger-400: var(--mantine-color-octopush-danger-4);
+  --color-octopush-danger-500: var(--mantine-color-octopush-danger-5);
+  --color-octopush-danger-600: var(--mantine-color-octopush-danger-6);
+  --color-octopush-danger-700: var(--mantine-color-octopush-danger-7);
+  --color-octopush-danger-800: var(--mantine-color-octopush-danger-8);
+  --color-octopush-danger-900: var(--mantine-color-octopush-danger-9);
+  --color-octopush-danger: var(--mantine-color-octopush-danger-filled);
+
+  /* Palette shades: octopush-blue */
+  --color-octopush-blue-50: var(--mantine-color-octopush-blue-0);
+  --color-octopush-blue-100: var(--mantine-color-octopush-blue-1);
+  --color-octopush-blue-200: var(--mantine-color-octopush-blue-2);
+  --color-octopush-blue-300: var(--mantine-color-octopush-blue-3);
+  --color-octopush-blue-400: var(--mantine-color-octopush-blue-4);
+  --color-octopush-blue-500: var(--mantine-color-octopush-blue-5);
+  --color-octopush-blue-600: var(--mantine-color-octopush-blue-6);
+  --color-octopush-blue-700: var(--mantine-color-octopush-blue-7);
+  --color-octopush-blue-800: var(--mantine-color-octopush-blue-8);
+  --color-octopush-blue-900: var(--mantine-color-octopush-blue-9);
+  --color-octopush-blue: var(--mantine-color-octopush-blue-filled);
+
+  /* Palette shades: octopush-yellow */
+  --color-octopush-yellow-50: var(--mantine-color-octopush-yellow-0);
+  --color-octopush-yellow-100: var(--mantine-color-octopush-yellow-1);
+  --color-octopush-yellow-200: var(--mantine-color-octopush-yellow-2);
+  --color-octopush-yellow-300: var(--mantine-color-octopush-yellow-3);
+  --color-octopush-yellow-400: var(--mantine-color-octopush-yellow-4);
+  --color-octopush-yellow-500: var(--mantine-color-octopush-yellow-5);
+  --color-octopush-yellow-600: var(--mantine-color-octopush-yellow-6);
+  --color-octopush-yellow-700: var(--mantine-color-octopush-yellow-7);
+  --color-octopush-yellow-800: var(--mantine-color-octopush-yellow-8);
+  --color-octopush-yellow-900: var(--mantine-color-octopush-yellow-9);
+  --color-octopush-yellow: var(--mantine-color-octopush-yellow-filled);
+
+  /* Palette shades: octopush-gray */
+  --color-octopush-gray-50: var(--mantine-color-octopush-gray-0);
+  --color-octopush-gray-100: var(--mantine-color-octopush-gray-1);
+  --color-octopush-gray-200: var(--mantine-color-octopush-gray-2);
+  --color-octopush-gray-300: var(--mantine-color-octopush-gray-3);
+  --color-octopush-gray-400: var(--mantine-color-octopush-gray-4);
+  --color-octopush-gray-500: var(--mantine-color-octopush-gray-5);
+  --color-octopush-gray-600: var(--mantine-color-octopush-gray-6);
+  --color-octopush-gray-700: var(--mantine-color-octopush-gray-7);
+  --color-octopush-gray-800: var(--mantine-color-octopush-gray-8);
+  --color-octopush-gray-900: var(--mantine-color-octopush-gray-9);
+  --color-octopush-gray: var(--mantine-color-octopush-gray-filled);
 }

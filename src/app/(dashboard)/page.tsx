@@ -1,9 +1,23 @@
-const Home = () => {
-  return (
-    <div className="flex flex-1 items-center justify-center">
-      <p className="text-octopush-muted">Dashboard content coming soon.</p>
-    </div>
-  );
-};
+import { Flex, Stack } from "@mantine/core";
+import { ActivityFeed } from "@/features/dashboard/components/ActivityFeed";
+import { ConversationStatus } from "@/features/dashboard/components/ConversationStatus";
+import { MessagesChart } from "@/features/dashboard/components/MessagesChart";
+import { MetricsRow } from "@/features/dashboard/components/MetricsRow";
 
-export default Home;
+export default function DashboardPage() {
+  return (
+    <Stack gap={24} p={24} h="100%">
+      {/* Metrics Row */}
+      <MetricsRow />
+
+      {/* Charts Row */}
+      <Flex gap={16}>
+        <MessagesChart />
+        <ConversationStatus />
+      </Flex>
+
+      {/* Activity Feed */}
+      <ActivityFeed />
+    </Stack>
+  );
+}

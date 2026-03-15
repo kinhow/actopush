@@ -1,13 +1,13 @@
-import path from "path";
+import path from "node:path";
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   turbopack: {
-    root: path.join(__dirname)
+    root: path.join(__dirname),
   },
   reactCompiler: {
-    compilationMode: 'annotation',
-  }
+    compilationMode: "annotation",
+  },
 };
 
 export default nextConfig;

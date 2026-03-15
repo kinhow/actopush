@@ -1,37 +1,36 @@
 "use client";
 
-import Link from "next/link";
-import { useActionState } from "react";
 import {
-  Flex,
-  Stack,
   Button,
   Divider,
-  TextInput,
+  Flex,
   PasswordInput,
+  Stack,
+  TextInput,
 } from "@mantine/core";
-import { signIn } from "../actions/signin";
+import Link from "next/link";
+import { useActionState } from "react";
 import { signInWithGoogle } from "../actions/oauth";
-import type { SignInState } from "../types/state";
+import { signIn } from "../actions/signin";
 import {
-  AUTH_INPUT_CLASSES,
   AUTH_DIVIDER_CLASSES,
+  AUTH_INPUT_CLASSES,
   AUTH_PRIMARY_BUTTON_CLASSES,
 } from "../constants/styles";
-import { AuthLayout } from "../layout/AuthLayout";
-import { AuthHeader } from "./AuthHeader";
+import type { SignInState } from "../types/state";
 import { AuthFooterLink } from "./AuthFooterLink";
+import { AuthHeader } from "./AuthHeader";
 import { FormErrorAlert } from "./FormErrorAlert";
 import { OAuthButton } from "./OAuthButton";
 
 export function SignInForm() {
   const [state, formAction, isPending] = useActionState<SignInState, FormData>(
     signIn,
-    null
+    null,
   );
 
   return (
-    <AuthLayout>
+    <>
       <AuthHeader
         title="Welcome back"
         subtitle="Sign in to your OctoPush account"
@@ -84,7 +83,11 @@ export function SignInForm() {
           </Stack>
         </form>
 
-        <Divider label="or" labelPosition="center" classNames={AUTH_DIVIDER_CLASSES} />
+        <Divider
+          label="or"
+          labelPosition="center"
+          classNames={AUTH_DIVIDER_CLASSES}
+        />
 
         <OAuthButton action={signInWithGoogle} />
       </Stack>
@@ -94,6 +97,6 @@ export function SignInForm() {
         linkText="Sign up"
         href="/signup"
       />
-    </AuthLayout>
+    </>
   );
 }

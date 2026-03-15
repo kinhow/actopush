@@ -1,31 +1,37 @@
 "use client";
 
-import { useActionState } from "react";
-import { Stack, Button, Divider, TextInput, PasswordInput, Alert } from "@mantine/core";
-import { IconMailCheck } from "@tabler/icons-react";
-import { signUp } from "../actions/signup";
-import { signInWithGoogle } from "../actions/oauth";
-import type { SignUpState } from "../types/state";
 import {
-  AUTH_INPUT_CLASSES,
+  Alert,
+  Button,
+  Divider,
+  PasswordInput,
+  Stack,
+  TextInput,
+} from "@mantine/core";
+import { IconMailCheck } from "@tabler/icons-react";
+import { useActionState } from "react";
+import { signInWithGoogle } from "../actions/oauth";
+import { signUp } from "../actions/signup";
+import {
   AUTH_DIVIDER_CLASSES,
+  AUTH_INPUT_CLASSES,
   AUTH_PRIMARY_BUTTON_CLASSES,
 } from "../constants/styles";
-import { AuthLayout } from "../layout/AuthLayout";
-import { AuthHeader } from "./AuthHeader";
+import type { SignUpState } from "../types/state";
 import { AuthFooterLink } from "./AuthFooterLink";
+import { AuthHeader } from "./AuthHeader";
 import { FormErrorAlert } from "./FormErrorAlert";
 import { OAuthButton } from "./OAuthButton";
 
 export function SignUpForm() {
   const [state, formAction, isPending] = useActionState<SignUpState, FormData>(
     signUp,
-    null
+    null,
   );
 
   if (state?.success) {
     return (
-      <AuthLayout>
+      <>
         <AuthHeader
           title="Check your email"
           subtitle="We've sent you a confirmation link"
@@ -46,12 +52,12 @@ export function SignUpForm() {
           linkText="Sign in"
           href="/signin"
         />
-      </AuthLayout>
+      </>
     );
   }
 
   return (
-    <AuthLayout>
+    <>
       <AuthHeader
         title="Create an account"
         subtitle="Sign up to get started with OctoPush"
@@ -106,7 +112,11 @@ export function SignUpForm() {
           </Stack>
         </form>
 
-        <Divider label="or" labelPosition="center" classNames={AUTH_DIVIDER_CLASSES} />
+        <Divider
+          label="or"
+          labelPosition="center"
+          classNames={AUTH_DIVIDER_CLASSES}
+        />
 
         <OAuthButton action={signInWithGoogle} />
       </Stack>
@@ -116,6 +126,6 @@ export function SignUpForm() {
         linkText="Sign in"
         href="/signin"
       />
-    </AuthLayout>
+    </>
   );
 }

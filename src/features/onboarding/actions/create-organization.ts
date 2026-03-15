@@ -1,15 +1,15 @@
 "use server";
 
-import { z } from "zod";
-import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
+import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
 import { onboardingSchema } from "../schemas/validation";
 import type { OnboardingState } from "../types/state";
 
 export async function createOrganization(
   _prevState: OnboardingState,
-  formData: FormData
+  formData: FormData,
 ): Promise<OnboardingState> {
   const rawData = {
     fullName: formData.get("fullName"),

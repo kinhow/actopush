@@ -1,11 +1,11 @@
-import Link from "next/link";
 import { Text } from "@mantine/core";
+import Link from "next/link";
 
-type AuthFooterLinkProps = {
+interface AuthFooterLinkProps {
   text: string;
   linkText: string;
   href: string;
-};
+}
 
 export function AuthFooterLink({ text, linkText, href }: AuthFooterLinkProps) {
   return (

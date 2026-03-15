@@ -1,9 +1,9 @@
-import { Stack, Title, Text } from "@mantine/core";
+import { Stack, Text, Title } from "@mantine/core";
 
-type AuthHeaderProps = {
+interface AuthHeaderProps {
   title: string;
   subtitle: string;
-};
+}
 
 export function AuthHeader({ title, subtitle }: AuthHeaderProps) {
   return (

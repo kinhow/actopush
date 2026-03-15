@@ -1,9 +1,9 @@
 import { Alert } from "@mantine/core";
 import { IconAlertCircle } from "@tabler/icons-react";
 
-type FormErrorAlertProps = {
+interface FormErrorAlertProps {
   message: string | undefined;
-};
+}
 
 export function FormErrorAlert({ message }: FormErrorAlertProps) {
   if (!message) return null;

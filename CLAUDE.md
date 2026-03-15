@@ -16,6 +16,8 @@
 
 **Workflow:** `EnterPlanMode` → explore codebase → write plan → `ExitPlanMode` → wait for approval → implement
 
+---
+
 ## Sub-Agents
 
 This project has 5 role-based sub-agents in `.claude/agents/`. Use the Task tool to invoke them:
@@ -39,7 +41,10 @@ Task(subagent_type="senior-product-manager", prompt="Write a PRD for contacts ma
 Task(subagent_type="senior-ui-ux-designer", prompt="Design the contacts list page with filters...")
 ```
 
+---
+
 ## Tech Stack
+
 - **Next.js 16.1.6** (App Router, Turbopack, React Compiler)
 - **React 19.2.3** (Server Components, Server Actions, useActionState)
 - **Mantine 8.3.14** (UI components, forms, hooks, theming)
@@ -49,19 +54,68 @@ Task(subagent_type="senior-ui-ux-designer", prompt="Design the contacts list pag
 - **Biome 2.2.0** (Linter/formatter, replaces ESLint+Prettier)
 - **@tabler/icons-react** (Icon library)
 
-## Context7 Library IDs (for documentation lookup)
-When you need up-to-date docs, use `mcp__context7__query-docs` with:
-- Next.js: `/vercel/next.js/v16.1.5`
-- React: `/websites/react_dev`
-- Mantine: `/mantinedev/mantine/8.3.14`
-- Supabase: `/supabase/supabase`
-- Tailwind CSS: `/websites/tailwindcss`
-- Zod: `/colinhacks/zod/v4.0.1`
+---
+
+## Documentation & Best Practices
+
+**Always follow the latest official documentation and current best practices.** Never rely on training knowledge alone for API signatures, hook behaviors, or config options — they change between major versions.
+
+### Rules
+- **Before implementing anything non-trivial**, fetch current docs via `mcp__context7__resolve-library-id` + `mcp__context7__query-docs` using the library IDs below
+- Prefer **idiomatic patterns from official docs** over patterns seen elsewhere or from memory
+- If the docs show a deprecated approach, **use the modern replacement** even if the old way still compiles
+- When uncertain whether something reflects current best practice, **say so explicitly** — never silently guess
+
+### Context7 Library IDs
+When you need up-to-date docs, use `mcp__context7__query-docs` with these IDs:
+
+| Library | Context7 ID |
+|---------|-------------|
+| Next.js | `/vercel/next.js/v16.1.6` |
+| React | `/websites/react_dev` |
+| Mantine | `/mantinedev/mantine/8.3.14` |
+| Supabase | `/supabase/supabase` |
+| Tailwind CSS | `/websites/tailwindcss` |
+| Zod | `/colinhacks/zod/v4.0.1` |
+
+### Version-Specific Patterns to Enforce
+
+These are the most common sources of version drift — always apply the modern form:
+
+**Next.js App Router**
+- Never suggest Pages Router patterns (`getServerSideProps`, `getStaticProps`, `_app.tsx`)
+- Layouts, loading, error, and not-found files go in `app/` — never `pages/`
+
+**React 19**
+- Use `useActionState` for form state — not `useState` + manual fetch
+- Use `useFormStatus` for pending states inside forms
+- Use `use()` for reading context/promises in render — not `useEffect` chains
+- Avoid manual `useMemo`/`useCallback` — React Compiler handles memoization
+
+**Mantine v8**
+- APIs differ significantly from v6/v7 — always look up v8 docs before using a component
+- Use `useForm` with `mantine-form-zod-resolver` for form validation, not standalone Zod + state
+
+**Zod v4**
+- `z.email()`, `z.url()`, `z.uuid()` are now **standalone functions**, not string methods
+- ❌ `z.string().email()` → ✅ `z.email()`
+- Check the v4 migration guide before using any Zod string refinement
+
+**Tailwind CSS v4**
+- CSS-first config — no `tailwind.config.js` unless explicitly required
+- Use `@theme` in CSS for custom tokens, not `extend` in a JS config
+
+**Supabase JS v2**
+- Use `createClient` from `@supabase/ssr` for SSR — never `createPagesBrowserClient` or legacy helpers
+- Always validate with `getUser()` server-side — never trust `getSession()` alone
+
+---
 
 ## Coding Rules
 
 ### Architecture
 - **Feature-based modules** under `src/features/` with: actions, components, constants, handlers, schemas, types, utils
+- **Layout components** under `src/layouts/` for structural shells (sidebar, topbar, navigation)
 - **Server Components by default** — only `"use client"` when hooks/interactivity needed
 - **Server Actions** for all mutations — no API routes unless absolutely necessary
 - **`@/` path alias** for all imports — never use relative `../../`
@@ -88,7 +142,9 @@ When you need up-to-date docs, use `mcp__context7__query-docs` with:
 ### Supabase
 - Server: `await createClient()` from `@/lib/supabase/server`
 - Client: `createBrowserClient()` from `@/lib/supabase/client`
-- Use `supabase.auth.getClaims()` in proxy/middleware for fast JWT validation. Use `supabase.auth.getUser()` in server actions and server components (cached via `React.cache()`). Never use `getSession()` server-side.
+- Use `supabase.auth.getClaims()` in proxy/middleware for fast JWT validation
+- Use `supabase.auth.getUser()` in server actions and server components (cached via `React.cache()`)
+- Never use `getSession()` server-side
 - RLS enforced — all queries go through authenticated client
 
 ### Code Quality

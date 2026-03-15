@@ -1,9 +1,9 @@
-import type { ReactNode } from "react";
 import { Center, Stack } from "@mantine/core";
+import type { ReactNode } from "react";
 
-type AuthLayoutProps = {
+interface AuthLayoutProps {
   children: ReactNode;
-};
+}
 
 export function AuthLayout({ children }: AuthLayoutProps) {
   return (

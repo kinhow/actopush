@@ -1,11 +1,11 @@
 /**
  * Base error fields shared across all auth forms
  */
-export type BaseAuthErrors = {
+export interface BaseAuthErrors {
   email?: string;
   password?: string;
   form?: string;
-};
+}
 
 /**
  * Sign in specific error fields
@@ -15,9 +15,9 @@ export type SignInErrors = BaseAuthErrors;
 /**
  * Sign up specific error fields (includes confirmPassword)
  */
-export type SignUpErrors = BaseAuthErrors & {
+export interface SignUpErrors extends BaseAuthErrors {
   confirmPassword?: string;
-};
+}
 
 /**
  * Generic auth state for server actions

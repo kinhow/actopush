@@ -1,11 +1,11 @@
 import {
-  IconLayoutDashboard,
   IconAddressBook,
+  IconFileDescription,
+  IconFilter,
+  IconGitBranch,
+  IconLayoutDashboard,
   IconMessageCircle,
   IconSpeakerphone,
-  IconGitBranch,
-  IconFilter,
-  IconFileDescription,
 } from "@tabler/icons-react";
 import type { NavSection } from "../types/navigation";
 
@@ -18,7 +18,11 @@ export const NAV_SECTIONS: NavSection[] = [
     items: [
       { icon: IconLayoutDashboard, label: "Dashboard", href: "/" },
       { icon: IconAddressBook, label: "Contacts", href: "/contacts" },
-      { icon: IconMessageCircle, label: "Conversations", href: "/conversations" },
+      {
+        icon: IconMessageCircle,
+        label: "Conversations",
+        href: "/conversations",
+      },
       { icon: IconSpeakerphone, label: "Campaigns", href: "/campaigns" },
     ],
   },

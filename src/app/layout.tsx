@@ -1,12 +1,9 @@
 import "./globals.css";
-import { theme } from "./theme";
+import { ColorSchemeScript, mantineHtmlProps } from "@mantine/core";
 import type { Metadata } from "next";
 import { Open_Sans } from "next/font/google";
-import {
-  MantineProvider,
-  mantineHtmlProps,
-  ColorSchemeScript,
-} from "@mantine/core";
+import { ThemeProvider } from "../providers/ThemeProvider";
+
 const openSans = Open_Sans({
   variable: "--font-open-sans",
   subsets: ["latin"],
@@ -25,12 +22,10 @@ export default function RootLayout({
   return (
     <html lang="en" {...mantineHtmlProps}>
       <head>
-        <ColorSchemeScript />
+        <ColorSchemeScript defaultColorScheme="auto" />
       </head>
       <body className={`${openSans.variable} antialiased`}>
-        <MantineProvider theme={theme}>
-          {children}
-        </MantineProvider>
+        <ThemeProvider>{children}</ThemeProvider>
       </body>
     </html>
   );

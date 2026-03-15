@@ -1,16 +1,16 @@
 "use server";
 
-import { z } from "zod";
-import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
-import { signUpSchema } from "../schemas/validation";
+import { redirect } from "next/navigation";
+import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
+import { signUpSchema } from "../schemas/validation";
 import type { SignUpState } from "../types/state";
 import { mapSignUpError } from "../utils/errors";
 
 export async function signUp(
   _prevState: SignUpState,
-  formData: FormData
+  formData: FormData,
 ): Promise<SignUpState> {
   const rawData = {
     email: formData.get("email"),

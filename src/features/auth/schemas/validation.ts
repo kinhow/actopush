@@ -11,7 +11,7 @@ const passwordSchema = z
   .check(
     z.regex(/[A-Z]/, "Password must contain at least one uppercase letter"),
     z.regex(/[a-z]/, "Password must contain at least one lowercase letter"),
-    z.regex(/[0-9]/, "Password must contain at least one number")
+    z.regex(/[0-9]/, "Password must contain at least one number"),
   );
 
 // Server-side validation (no confirmPassword needed)
@@ -21,12 +21,14 @@ export const signUpServerSchema = z.object({
 });
 
 // Client-side validation (includes confirmPassword)
-export const signUpSchema = signUpServerSchema.extend({
-  confirmPassword: z.string().min(1, "Please confirm your password"),
-}).refine((data) => data.password === data.confirmPassword, {
-  message: "Passwords do not match",
-  path: ["confirmPassword"],
-});
+export const signUpSchema = signUpServerSchema
+  .extend({
+    confirmPassword: z.string().min(1, "Please confirm your password"),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords do not match",
+    path: ["confirmPassword"],
+  });
 
 export type SignInFormValues = z.infer<typeof signInSchema>;
 export type SignUpFormValues = z.infer<typeof signUpSchema>;

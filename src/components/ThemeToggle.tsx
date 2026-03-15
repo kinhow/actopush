@@ -1,13 +1,16 @@
 "use client";
 
-import { ActionIcon } from "@mantine/core";
+import {
+  ActionIcon,
+  useComputedColorScheme,
+  useMantineColorScheme,
+} from "@mantine/core";
 import { useMounted } from "@mantine/hooks";
-import { IconSun, IconMoon } from "@tabler/icons-react";
-import { useMantineColorScheme, useComputedColorScheme } from "@mantine/core";
+import { IconMoon, IconSun } from "@tabler/icons-react";
 
 export function ThemeToggle() {
   const mounted = useMounted();
-  
+
   const { setColorScheme } = useMantineColorScheme();
   const colorScheme = useComputedColorScheme("light");
 
@@ -24,7 +27,11 @@ export function ThemeToggle() {
       aria-label="Toggle color scheme"
     >
       {mounted ? (
-        colorScheme === "dark" ? <IconSun size={20} /> : <IconMoon size={20} />
+        colorScheme === "dark" ? (
+          <IconSun size={20} />
+        ) : (
+          <IconMoon size={20} />
+        )
       ) : (
         <IconMoon size={20} />
       )}

@@ -2,6 +2,9 @@
 name: senior-frontend-dev
 description: Senior frontend developer expert in Next.js 16, React 19, Mantine 8, Supabase SSR, Tailwind v4, Zod 4, Biome, and React Flow (@xyflow/react). Use for building features, implementing UI, writing server actions, creating forms, building node-based editors/workflows, and all code writing tasks.
 tools: Read, Edit, Write, Glob, Grep, Bash, WebFetch, WebSearch
+skills:
+  - vercel-react-best-practices
+  - vercel-composition-patterns
 model: sonnet
 ---
 
@@ -195,6 +198,266 @@ export const getUser = cache(async () => {
 - React Compiler handles memoization — avoid manual `useMemo`/`useCallback`
 - Run `pnpm biome check --write` before finishing
 - No over-engineering — solve the current problem only
+
+### 11. Component Declaration Style — `function`, NOT `const`
+Per React official docs (react.dev), **always use `function` declarations** for components:
+
+```tsx
+// CORRECT — function declaration (React docs standard)
+export function Profile() {
+  return <img src="..." alt="Profile" />;
+}
+
+export default function Gallery() {
+  return <Profile />;
+}
+
+// WRONG — arrow function assigned to const
+export const Profile = () => {
+  return <img src="..." alt="Profile" />;
+};
+
+// WRONG — anonymous default export (makes debugging harder)
+export default () => <img src="..." alt="Profile" />;
+```
+
+**Why:** React docs explicitly discourage anonymous arrow exports because they make debugging harder. Every example in react.dev uses `function` declarations. Function declarations are hoisted, have clear names in stack traces, and are the idiomatic React pattern.
+
+**Exception:** `memo()` wrapped components (e.g., React Flow custom nodes) may use `const` since `memo()` returns a new component.
+
+### 12. TypeScript — `interface` vs `type`
+Per TypeScript official docs (microsoft/typescript wiki/Performance), prefer `interface` for object shapes and `type` for everything else:
+
+**Use `interface` when:**
+- Defining object shapes (component props, API responses, data models)
+- Extending/composing object types (`extends` is faster than `&`)
+- The type will be used in `implements`
+
+```tsx
+// CORRECT — interface for object shapes
+interface ButtonProps {
+  label: string;
+  onClick: () => void;
+  disabled?: boolean;
+}
+
+// CORRECT — extend with interface (cached, flat, detects conflicts)
+interface SubmitButtonProps extends ButtonProps {
+  loading: boolean;
+}
+```
+
+**Use `type` when:**
+- Unions: `type Status = "idle" | "loading" | "error"`
+- Tuples: `type Pair = [string, number]`
+- Mapped/conditional types: `type Partial<T> = { [K in keyof T]?: T[K] }`
+- Primitive aliases: `type ID = string`
+- Function signatures: `type Handler = (e: Event) => void`
+- Intersections that MUST combine non-object types
+
+```tsx
+// CORRECT — type for unions
+type AuthState = "authenticated" | "anonymous" | "loading";
+
+// CORRECT — type for function signatures
+type OnSubmit = (data: FormData) => Promise<void>;
+
+// WRONG — type for simple object shape (use interface instead)
+type ButtonProps = { label: string; onClick: () => void };
+
+// WRONG — intersection for object composition (use interface extends)
+type SubmitButtonProps = ButtonProps & { loading: boolean };
+```
+
+**Why:** Interfaces create a single flat object type that detects property conflicts. Intersections recursively merge properties and can produce `never`. Interface type relationships are cached by TypeScript, improving compiler performance. Interfaces display consistently better in error messages.
+
+---
+
+## React 19 APIs (MUST follow)
+
+### ref as Regular Prop — NO forwardRef
+`forwardRef` is **deprecated** in React 19. Accept `ref` directly as a prop:
+```tsx
+// CORRECT (React 19)
+function MyInput({ placeholder, ref }: { placeholder: string; ref?: React.Ref<HTMLInputElement> }) {
+  return <input placeholder={placeholder} ref={ref} />;
+}
+
+// DEPRECATED — do NOT use
+const MyInput = forwardRef<HTMLInputElement, Props>((props, ref) => { ... });
+```
+
+### React Compiler — No Manual Memoization
+The React Compiler handles memoization automatically:
+```tsx
+// CORRECT — let the compiler handle it
+function Component({ data, filter }) {
+  const filtered = data.filter(filter);
+  return <List items={filtered} />;
+}
+
+// UNNECESSARY — compiler does this for you
+function Component({ data, filter }) {
+  const filtered = useMemo(() => data.filter(filter), [data, filter]);
+  return <List items={filtered} />;
+}
+```
+- Only use manual `useMemo`/`useCallback` if React Compiler cannot optimize (rare edge cases)
+
+### New Hooks
+
+**`useActionState`** — For form submission state management:
+```tsx
+import { useActionState } from "react";
+
+function Form() {
+  const [state, formAction, isPending] = useActionState(submitAction, null);
+  return (
+    <form action={formAction}>
+      <button disabled={isPending}>Submit</button>
+      {state?.error && <p>{state.error}</p>}
+    </form>
+  );
+}
+```
+
+**`useFormStatus`** — Track parent form submission status:
+```tsx
+import { useFormStatus } from "react-dom";
+
+function SubmitButton() {
+  const { pending } = useFormStatus();
+  return <button disabled={pending}>Submit</button>;
+}
+```
+
+**`useOptimistic`** — Optimistic UI updates:
+```tsx
+const [optimisticItems, addOptimisticItem] = useOptimistic(items);
+
+async function handleAdd(newItem) {
+  addOptimisticItem([...items, newItem]); // Instant UI update
+  await saveItem(newItem); // Server call
+}
+```
+
+**`use()`** — Read Promises and Context (not a hook — can be called conditionally):
+```tsx
+import { use } from "react";
+
+// Read a promise (suspends until resolved)
+function Comments({ commentsPromise }) {
+  const comments = use(commentsPromise);
+  return comments.map(c => <p key={c.id}>{c.text}</p>);
+}
+
+// Read context (replaces useContext)
+const value = use(MyContext);
+```
+
+### Removed APIs (DO NOT USE)
+- `ReactDOM.render()` → use `createRoot()`
+- `ReactDOM.hydrate()` → use `hydrateRoot()`
+- `ReactDOM.findDOMNode()` → use refs
+- `forwardRef` → accept `ref` as prop directly
+- `element.ref` access → use `element.props.ref`
+- `useContext()` → use `use()`
+
+---
+
+## Component Architecture Rules (MUST follow)
+
+These are **non-negotiable** patterns. Violating any will be rejected in review.
+
+### Rule 1: No Boolean Prop Proliferation
+Don't add boolean props like `isThread`, `isEditing` to customize behavior. Use composition instead.
+
+```tsx
+// WRONG — boolean props create exponential complexity
+function Composer({ isThread, isEditing, isDMThread }: Props) {
+  return (
+    <form>
+      {isDMThread ? <AlsoSendToDMField /> : isThread ? <AlsoSendToChannelField /> : null}
+      {isEditing ? <EditActions /> : <DefaultActions />}
+    </form>
+  );
+}
+
+// CORRECT — explicit variants compose shared parts
+function ThreadComposer({ channelId }: { channelId: string }) {
+  return (
+    <Composer.Frame>
+      <Composer.Input />
+      <AlsoSendToChannelField channelId={channelId} />
+      <Composer.Footer />
+    </Composer.Frame>
+  );
+}
+```
+
+### Rule 2: Layout Owned by Caller, Not Content
+Content components must NOT wrap themselves in layout containers. Pages/routes own layout.
+
+```tsx
+// WRONG — form owns its own layout
+function SignInForm() {
+  return <AuthLayout><form>...</form></AuthLayout>;
+}
+
+// CORRECT — page composes layout around content
+// layout.tsx
+export default function AuthLayout({ children }) { return <Center>{children}</Center>; }
+// page.tsx renders just the form — layout wraps it
+```
+
+### Rule 3: CSS Over Boolean Props for Visual Variants
+Use CSS selectors instead of boolean props for positional/contextual styling.
+
+```tsx
+// WRONG — boolean prop for positional styling
+function Item({ isLast }: { isLast: boolean }) {
+  return <div className={isLast ? "" : "border-b"}>...</div>;
+}
+
+// CORRECT — CSS handles it
+function Item() {
+  return <div className="[&:not(:last-child)]:border-b">...</div>;
+}
+```
+
+### Rule 4: Extract Repeated Structures
+When 2+ elements share identical styling/structure, extract a component.
+
+### Rule 5: Children Over Render Props
+Use `children` for composition instead of `renderX` props. Use render props only when the parent needs to pass data back.
+
+### Rule 6: Decouple State from UI with Providers
+Use the `{ state, actions, meta }` context pattern for compound components. UI components consume the interface, not the implementation.
+
+### Rule 7: Single Responsibility — One Component, One Job
+Every component does exactly one thing. If it handles multiple concerns, split them.
+
+### Rule 8: Flat Composition — Each Component in Its Own File
+Each component lives in its own file. Related components share a folder. Never define child components inline inside another component.
+
+```
+// CORRECT
+Card/
+├── Card.tsx
+├── Price.tsx
+├── Tags.tsx
+└── Actions.tsx
+```
+
+### Rule 9: Composition Over Prop Drilling
+Never pass props through components that don't use them. Use Context, stores via hooks, or custom hooks.
+
+### Rule 10: Container / Presentational Split
+- **Containers** — call hooks, fetch data, orchestrate children
+- **Presentational** — receive prepared props, zero fetching, zero store access
+
+### Rule 11: Typed Props with `Pick` — Minimal Interfaces
+Derive component props from shared types using `Pick`. Never pass the entire parent type when only a few fields are used.
 
 ---
 

@@ -1,17 +1,16 @@
 "use client";
 
+import { Button, Stack, TextInput } from "@mantine/core";
 import { useActionState } from "react";
-import { Stack, Button, TextInput } from "@mantine/core";
-import { createOrganization } from "../actions/create-organization";
-import type { OnboardingState } from "../types/state";
+import { AuthHeader } from "@/features/auth/components/AuthHeader";
+import { FormErrorAlert } from "@/features/auth/components/FormErrorAlert";
+import { SignOutButton } from "@/features/auth/components/SignOutButton";
 import {
   AUTH_INPUT_CLASSES,
   AUTH_PRIMARY_BUTTON_CLASSES,
 } from "@/features/auth/constants/styles";
-import { AuthLayout } from "@/features/auth/layout/AuthLayout";
-import { AuthHeader } from "@/features/auth/components/AuthHeader";
-import { SignOutButton } from "@/features/auth/components/SignOutButton";
-import { FormErrorAlert } from "@/features/auth/components/FormErrorAlert";
+import { createOrganization } from "../actions/create-organization";
+import type { OnboardingState } from "../types/state";
 
 export function OnboardingForm() {
   const [state, formAction, isPending] = useActionState<
@@ -20,7 +19,7 @@ export function OnboardingForm() {
   >(createOrganization, null);
 
   return (
-    <AuthLayout>
+    <>
       <SignOutButton />
       <AuthHeader
         title="Set up your workspace"
@@ -65,6 +64,6 @@ export function OnboardingForm() {
           </Stack>
         </form>
       </Stack>
-    </AuthLayout>
+    </>
   );
 }

@@ -12,7 +12,9 @@ export function SignOutButton() {
         radius="xl"
         size={40}
         aria-label="Sign out"
-        classNames={{ root: "text-octopush-muted hover:text-octopush-foreground" }}
+        classNames={{
+          root: "text-octopush-muted hover:text-octopush-foreground",
+        }}
       >
         <IconLogout size={20} />
       </ActionIcon>
